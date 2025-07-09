@@ -73,9 +73,20 @@ interface Sprint {
 }
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview' | 'sprints'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
+  const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);
+  const [comments, setComments] = useState<{[key: string]: Array<{id: string, author: string, text: string, timestamp: string}>}>({
+    '1': [
+      { id: '1', author: 'John Doe', text: 'Great progress on the authentication module!', timestamp: '2 hours ago' },
+      { id: '2', author: 'Jane Smith', text: 'Need to review the security implementation before next milestone.', timestamp: '4 hours ago' }
+    ],
+    '2': [
+      { id: '3', author: 'Mike Johnson', text: 'Dashboard analytics are looking good. Ready for testing.', timestamp: '1 day ago' }
+    ]
+  });
+  const [newComment, setNewComment] = useState('');
 
   const projectsData: ProjectData[] = [
     {
