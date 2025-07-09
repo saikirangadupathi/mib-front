@@ -73,20 +73,9 @@ interface Sprint {
 }
 
 const Dashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'overview'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'sprints'>('overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [selectedSprint, setSelectedSprint] = useState<Sprint | null>(null);
-  const [comments, setComments] = useState<{[key: string]: Array<{id: string, author: string, text: string, timestamp: string}>}>({
-    '1': [
-      { id: '1', author: 'John Doe', text: 'Great progress on the authentication module!', timestamp: '2 hours ago' },
-      { id: '2', author: 'Jane Smith', text: 'Need to review the security implementation before next milestone.', timestamp: '4 hours ago' }
-    ],
-    '2': [
-      { id: '3', author: 'Mike Johnson', text: 'Dashboard analytics are looking good. Ready for testing.', timestamp: '1 day ago' }
-    ]
-  });
-  const [newComment, setNewComment] = useState('');
 
   const projectsData: ProjectData[] = [
     {
@@ -328,6 +317,109 @@ const Dashboard: React.FC = () => {
     return matchesSearch && matchesFilter;
   });
 
+  const handleSprintClick = (sprint: Sprint) => {
+    setSelectedSprint(sprint);
+  };
+
+  const handleAddComment = () => {
+    if (newComment.trim() && selectedSprint) {
+      const comment = {
+        id: Date.now().toString(),
+        author: 'Current User',
+        text: newComment.trim(),
+        timestamp: 'Just now'
+      };
+      
+      setComments(prev => ({
+        ...prev,
+        [selectedSprint.id]: [...(prev[selectedSprint.id] || []), comment]
+      }));
+      
+      setNewComment('');
+    }
+  };
+
+  if (selectedSprint) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        {/* Header */}
+        <div className="bg-white border-b border-slate-200 sticky top-0 z-40 backdrop-blur-sm bg-white/95">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
+              <div className="flex items-center space-x-4">
+                <button 
+                  onClick={() => setSelectedSprint(null)}
+                  className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors"
+                >
+                  <ArrowRight className="w-5 h-5 rotate-180" />
+                </button>
+                <div className="flex items-center space-x-3">
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                    <BarChart3 className="w-5 h-5 text-white" />
+                  </div>
+                  <h1 className="text-xl font-bold text-slate-900">{selectedSprint.name}</h1>
+                </div>
+              </div>
+              
+              <div className="flex items-center space-x-4">
+                <button className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                  <Bell className="w-5 h-5" />
+                </button>
+                <button className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors">
+                  <Settings className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Sprint Details */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Sprint Overview Card */}
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div className="flex items-start justify-between mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2">{selectedSprint.name}</h2>
+                    <p className="text-slate-600">{selectedSprint.description}</p>
+                  </div>
+                  {getStatusLabelBadge(selectedSprint.statusLabel)}
+                </div>
+
+                {/* Progress */}
+                <div className="mb-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-sm font-medium text-slate-700">Overall Progress</span>
+                    <span className="text-2xl font-bold text-slate-900">{selectedSprint.progress}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 rounded-full h-3">
+                    <div 
+                      className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500"
+                      style={{ width: `${selectedSprint.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                {/* Task Breakdown */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+                  <div className="text-center p-4 bg-slate-50 rounded-lg">
+                    <div className="text-2xl font-bold text-slate-900">{selectedSprint.tasks.total}</div>
+                    <div className="text-sm text-slate-600">Total Tasks</div>
+                  </div>
+                  <div className="text-center p-4 bg-emerald-50 rounded-lg">
+                    <div className="text-2xl font-bold text-emerald-600">{selectedSprint.tasks.completed}</div>
+                    <div className="text-sm text-slate-600">Completed</div>
+                  </div>
+                  <div className="text-center p-4 bg-amber-50 rounded-lg">
+                    <div className="text-2xl font-bold text-amber-600">{selectedSprint.tasks.inProgress}</div>
+                    <div className="text-sm text-slate-600">In Progress</div>
+                  </div>
+                  <div className="text-center p-4 bg-slate-50 rounded-lg">
+                    <div className="text-2xl font-bold text-slate-500">{selectedSprint.tasks.pending}</div>
+                    <div className="text-sm text-slate-600">Pending</div>
+                  </div>
+                </div>
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* Header */}
@@ -776,7 +868,58 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
 
+                {/* Sprint Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="text-sm font-medium text-slate-700 mb-3">Sprint Details</h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span className="text-sm text-slate-600">Project:</span>
+                        <span className="text-sm font-medium text-slate-900">{selectedSprint.project}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-slate-600">Priority:</span>
+                        {getPriorityBadge(selectedSprint.priority)}
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-sm text-slate-600">Due Date:</span>
+                        <span className="text-sm font-medium text-slate-900">{selectedSprint.dueDate}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-slate-700 mb-3">Team Members</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedSprint.teamMembers.map((member, index) => (
+                        <div key={index} className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+                          <div className={`w-6 h-6 ${member.color} rounded-full flex items-center justify-center text-xs font-semibold text-white`}>
+                            {member.initial}
+                          </div>
+                          <span className="text-sm text-slate-700">{member.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
+            {/* Comments Section */}
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl shadow-sm border border-slate-200">
+                <div className="p-6 border-b border-slate-200">
+                  <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Comments
+                  </h3>
+                </div>
+                
+                <div className="p-6">
+                  {/* Add Comment */}
+                  <div className="mb-6">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
             {filteredSprints.length === 0 && (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
