@@ -65,6 +65,11 @@ interface Sprint {
     inProgress: number;
     pending: number;
   };
+  statusLabel: 'On Track' | 'Slightly Behind' | 'At Risk';
+  dueDate: string;
+  teamMembers: { name: string; initial: string; color: string }[];
+  mobiusLevel: 'A' | 'B' | 'C' | 'D';
+  mobiusDescription: string;
 }
 
 const Dashboard: React.FC = () => {
@@ -130,21 +135,31 @@ const Dashboard: React.FC = () => {
   const sprintsList: Sprint[] = [
     {
       id: '1',
-      name: 'User Authentication System',
-      project: 'TI Board',
+      name: 'TEDaas-SecurityToken-Sprint-4',
+      project: 'TEDaas',
       status: 'active',
-      progress: 75,
+      progress: 65,
       startDate: '2024-01-15',
       endDate: '2024-02-15',
       team: ['John Doe', 'Jane Smith', 'Mike Johnson'],
       priority: 'high',
       description: 'Implement secure user authentication with multi-factor authentication support',
-      tasks: { total: 12, completed: 9, inProgress: 2, pending: 1 }
+      tasks: { total: 12, completed: 9, inProgress: 2, pending: 1 },
+      statusLabel: 'Slightly Behind',
+      dueDate: 'Jul 11th',
+      teamMembers: [
+        { name: 'V', initial: 'V', color: 'bg-blue-500' },
+        { name: 'K', initial: 'K', color: 'bg-green-500' },
+        { name: 'C', initial: 'C', color: 'bg-purple-500' },
+        { name: 'N', initial: 'N', color: 'bg-orange-500' }
+      ],
+      mobiusLevel: 'B',
+      mobiusDescription: 'Fully understand Mobius architecture'
     },
     {
       id: '2',
-      name: 'Dashboard Analytics',
-      project: 'Holacracy Version 2.0',
+      name: 'TEDaas-SecurityToken-Sprint-5',
+      project: 'TEDaas',
       status: 'active',
       progress: 45,
       startDate: '2024-01-20',
@@ -152,46 +167,60 @@ const Dashboard: React.FC = () => {
       team: ['Sarah Wilson', 'Tom Brown'],
       priority: 'medium',
       description: 'Create comprehensive analytics dashboard with real-time data visualization',
-      tasks: { total: 8, completed: 3, inProgress: 3, pending: 2 }
+      tasks: { total: 8, completed: 3, inProgress: 3, pending: 2 },
+      statusLabel: 'On Track',
+      dueDate: 'Jul 18th',
+      teamMembers: [
+        { name: 'H', initial: 'H', color: 'bg-blue-500' },
+        { name: 'H', initial: 'H', color: 'bg-green-500' },
+        { name: 'S', initial: 'S', color: 'bg-purple-500' },
+        { name: 'L', initial: 'L', color: 'bg-red-500' }
+      ],
+      mobiusLevel: 'B',
+      mobiusDescription: 'Fully understand Mobius architecture'
     },
     {
       id: '3',
-      name: 'Mobile App Integration',
-      project: 'TI Board',
-      status: 'planned',
-      progress: 0,
+      name: 'HCYV2 Sprint 3',
+      project: 'Holacracy Version 2.0',
+      status: 'active',
+      progress: 70,
       startDate: '2024-02-01',
       endDate: '2024-03-01',
       team: ['Alex Chen', 'Lisa Garcia'],
-      priority: 'low',
+      priority: 'medium',
       description: 'Develop mobile application with offline capabilities',
-      tasks: { total: 15, completed: 0, inProgress: 0, pending: 15 }
+      tasks: { total: 15, completed: 0, inProgress: 0, pending: 15 },
+      statusLabel: 'Slightly Behind',
+      dueDate: 'Jul 25th',
+      teamMembers: [
+        { name: 'S', initial: 'S', color: 'bg-blue-500' },
+        { name: 'C', initial: 'C', color: 'bg-green-500' },
+        { name: 'K', initial: 'K', color: 'bg-purple-500' }
+      ],
+      mobiusLevel: 'C',
+      mobiusDescription: 'Still learning Mobius details but I can'
     },
     {
       id: '4',
-      name: 'API Performance Optimization',
+      name: 'HCYV2 Sprint 4',
       project: 'Holacracy Version 2.0',
-      status: 'completed',
-      progress: 100,
+      status: 'active',
+      progress: 30,
       startDate: '2023-12-01',
       endDate: '2024-01-10',
       team: ['David Lee', 'Emma Davis'],
       priority: 'high',
       description: 'Optimize API endpoints for better performance and scalability',
-      tasks: { total: 10, completed: 10, inProgress: 0, pending: 0 }
-    },
-    {
-      id: '5',
-      name: 'Security Audit',
-      project: 'TI Board',
-      status: 'on-hold',
-      progress: 20,
-      startDate: '2024-01-10',
-      endDate: '2024-02-10',
-      team: ['Robert Kim'],
-      priority: 'high',
-      description: 'Comprehensive security audit and vulnerability assessment',
-      tasks: { total: 6, completed: 1, inProgress: 1, pending: 4 }
+      tasks: { total: 10, completed: 10, inProgress: 0, pending: 0 },
+      statusLabel: 'At Risk',
+      dueDate: 'Aug 1st',
+      teamMembers: [
+        { name: 'C', initial: 'C', color: 'bg-blue-500' },
+        { name: 'K', initial: 'K', color: 'bg-green-500' }
+      ],
+      mobiusLevel: 'D',
+      mobiusDescription: "Don't understand much at all; need lots"
     }
   ];
 
@@ -252,6 +281,33 @@ const Dashboard: React.FC = () => {
         {priority.charAt(0).toUpperCase() + priority.slice(1)}
       </span>
     );
+  };
+  const getStatusLabelBadge = (statusLabel: string) => {
+    const statusConfig = {
+      'On Track': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', dot: 'bg-emerald-500' },
+      'Slightly Behind': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', dot: 'bg-amber-500' },
+      'At Risk': { bg: 'bg-red-50', text: 'text-red-700', border: 'border-red-200', dot: 'bg-red-500' }
+    };
+    
+    const config = statusConfig[statusLabel as keyof typeof statusConfig];
+    
+    return (
+      <span className={`inline-flex items-center gap-2 px-3 py-1 text-sm font-medium rounded-full border ${config.bg} ${config.text} ${config.border}`}>
+        <div className={`w-2 h-2 rounded-full ${config.dot}`}></div>
+        {statusLabel}
+      </span>
+    );
+  };
+
+  const getMobiusLevelColor = (level: string) => {
+    const levelConfig = {
+      'A': { bg: 'bg-emerald-500', text: 'text-white' },
+      'B': { bg: 'bg-blue-500', text: 'text-white' },
+      'C': { bg: 'bg-amber-500', text: 'text-white' },
+      'D': { bg: 'bg-red-500', text: 'text-white' }
+    };
+    
+    return levelConfig[level as keyof typeof levelConfig];
   };
 
   const filteredSprints = sprintsList.filter(sprint => {
@@ -619,113 +675,96 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Sprint Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-6">
               {filteredSprints.map((sprint) => (
-                <div key={sprint.id} className="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                <div key={sprint.id} className="bg-white rounded-xl shadow-sm border border-slate-200 hover:shadow-lg transition-all duration-300">
                   <div className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-slate-900 mb-2">{sprint.name}</h3>
-                        <p className="text-sm text-slate-600 mb-3">{sprint.description}</p>
-                        <div className="flex items-center gap-2 mb-3">
-                          {getStatusBadge(sprint.status)}
-                          {getPriorityBadge(sprint.priority)}
-                        </div>
-                      </div>
-                      <div className="relative">
-                        <button className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">
-                          <MoreVertical className="w-4 h-4" />
+                    {/* Header with title and status */}
+                    <div className="flex items-start justify-between mb-6">
+                      <h3 className="text-lg font-semibold text-slate-900 flex-1">{sprint.name}</h3>
+                      <div className="flex items-center gap-2">
+                        {getStatusLabelBadge(sprint.statusLabel)}
+                        <button className="p-1 text-slate-400 hover:text-slate-600 rounded">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
                         </button>
                       </div>
                     </div>
 
-                    {/* Progress Bar */}
-                    <div className="mb-4">
-                      <div className="flex items-center justify-between mb-2">
+                    {/* Progress Section */}
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-3">
                         <span className="text-sm font-medium text-slate-700">Progress</span>
-                        <span className="text-sm font-semibold text-slate-900">{sprint.progress}%</span>
+                        <span className="text-lg font-bold text-slate-900">{sprint.progress}%</span>
                       </div>
-                      <div className="w-full bg-slate-200 rounded-full h-2">
+                      <div className="w-full bg-slate-200 rounded-full h-2.5">
                         <div 
-                          className="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full transition-all duration-300"
+                          className="bg-gradient-to-r from-blue-500 to-blue-600 h-2.5 rounded-full transition-all duration-500"
                           style={{ width: `${sprint.progress}%` }}
                         ></div>
                       </div>
                     </div>
 
-                    {/* Task Summary */}
-                    <div className="grid grid-cols-4 gap-3 mb-4">
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-slate-900">{sprint.tasks.total}</div>
-                        <div className="text-xs text-slate-600">Total</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-emerald-600">{sprint.tasks.completed}</div>
-                        <div className="text-xs text-slate-600">Done</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-amber-600">{sprint.tasks.inProgress}</div>
-                        <div className="text-xs text-slate-600">In Progress</div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-lg font-bold text-slate-500">{sprint.tasks.pending}</div>
-                        <div className="text-xs text-slate-600">Pending</div>
-                      </div>
-                    </div>
-
-                    {/* Sprint Details */}
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-600">Project:</span>
-                        <span className="font-medium text-slate-900">{sprint.project}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-600">Duration:</span>
-                        <span className="font-medium text-slate-900">
-                          {new Date(sprint.startDate).toLocaleDateString()} - {new Date(sprint.endDate).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="text-slate-600">Team:</span>
+                    {/* Team and Due Date */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1 text-sm text-slate-600">
+                          <Users className="w-4 h-4" />
+                          <span>{sprint.teamMembers.length} members</span>
+                        </div>
                         <div className="flex -space-x-1">
-                          {sprint.team.slice(0, 3).map((member, index) => (
+                          {sprint.teamMembers.map((member, index) => (
                             <div
                               key={index}
-                              className="w-6 h-6 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-xs font-medium text-white border-2 border-white"
-                              title={member}
+                              className={`w-8 h-8 ${member.color} rounded-full flex items-center justify-center text-sm font-semibold text-white border-2 border-white shadow-sm`}
+                              title={member.name}
                             >
-                              {member.split(' ').map(n => n[0]).join('')}
+                              {member.initial}
                             </div>
                           ))}
-                          {sprint.team.length > 3 && (
-                            <div className="w-6 h-6 bg-slate-400 rounded-full flex items-center justify-center text-xs font-medium text-white border-2 border-white">
-                              +{sprint.team.length - 3}
-                            </div>
-                          )}
                         </div>
                       </div>
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-2 pt-4 border-t border-slate-200">
-                      <button className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
-                        <Eye className="w-4 h-4" />
-                        View Details
-                      </button>
-                      <button className="flex items-center gap-2 text-sm text-slate-600 hover:text-slate-700 font-medium">
-                        <Edit className="w-4 h-4" />
-                        Edit
-                      </button>
-                      <div className="ml-auto">
-                        <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      <div className="flex items-center gap-1 text-sm text-slate-600">
+                        <Calendar className="w-4 h-4" />
+                        <span>Due: {sprint.dueDate}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {/* Mobius Understanding Scale */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-6 py-4">
+                <h2 className="text-xl font-semibold text-white">Mobius Understanding Scale</h2>
+              </div>
+              
+              <div className="p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {['A', 'B', 'C', 'D'].map((level) => {
+                    const levelConfig = getMobiusLevelColor(level);
+                    const descriptions = {
+                      'A': 'Fully understand Mobius architecture',
+                      'B': 'Fully understand Mobius architecture', 
+                      'C': 'Still learning Mobius details but I can',
+                      'D': "Don't understand much at all; need lots"
+                    };
+                    
+                    return (
+                      <div key={level} className="text-center">
+                        <div className={`w-12 h-12 ${levelConfig.bg} rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                          <span className={`text-xl font-bold ${levelConfig.text}`}>{level}</span>
+                        </div>
+                        <p className="text-sm text-slate-600 leading-relaxed">{descriptions[level as keyof typeof descriptions]}</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
 
             {filteredSprints.length === 0 && (
               <div className="text-center py-12">
