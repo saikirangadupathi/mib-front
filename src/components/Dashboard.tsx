@@ -448,43 +448,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Navigation Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-slate-200">
-            <nav className="-mb-px flex space-x-8">
-              <button
-                onClick={() => setActiveTab('overview')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === 'overview'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Activity className="w-4 h-4" />
-                  <span>Overview</span>
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('sprints')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === 'sprints'
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Zap className="w-4 h-4" />
-                  <span>Sprint Management</span>
-                </div>
-              </button>
-            </nav>
-          </div>
-        </div>
 
-        {activeTab === 'overview' ? (
-          <>
-            {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
                 <div className="flex items-center justify-between">
