@@ -83,7 +83,7 @@ const Dashboard: React.FC = () => {
   // Rest of your component code...
 
   return (
-    <div>Dashboard Component</div>
+    // Your JSX code...
   );
 };
 
